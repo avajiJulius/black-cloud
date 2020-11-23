@@ -1,6 +1,5 @@
-package com.file.manager;
+package com.blackcloud.desktop.model;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,7 +8,8 @@ import java.time.ZoneOffset;
 
 public class FileInfo {
     public enum FileType {
-        FILE("F"), DIRECTORY("D");
+        FILE("f"),
+        DIRECTORY("d");
 
         private String name;
 
@@ -21,6 +21,11 @@ public class FileInfo {
             this.name = name;
         }
     }
+
+    private String filename;
+    private long size;
+    private FileType type;
+    private LocalDateTime lastModified;
 
     public FileInfo(Path path) {
         try {
@@ -35,25 +40,12 @@ public class FileInfo {
         }
     }
 
-    private String filename;
-    private FileType type;
-    private long size;
-    private LocalDateTime lastModified;
-
     public String getFilename() {
         return filename;
     }
 
     public void setFilename(String filename) {
         this.filename = filename;
-    }
-
-    public FileType getType() {
-        return type;
-    }
-
-    public void setType(FileType type) {
-        this.type = type;
     }
 
     public long getSize() {
@@ -64,6 +56,14 @@ public class FileInfo {
         this.size = size;
     }
 
+    public FileType getType() {
+        return type;
+    }
+
+    public void setType(FileType type) {
+        this.type = type;
+    }
+
     public LocalDateTime getLastModified() {
         return lastModified;
     }
@@ -71,5 +71,4 @@ public class FileInfo {
     public void setLastModified(LocalDateTime lastModified) {
         this.lastModified = lastModified;
     }
-
 }

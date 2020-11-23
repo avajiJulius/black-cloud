@@ -1,4 +1,4 @@
-package com.file.manager;
+package com.blackcloud.desktop.elements;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -13,12 +13,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Controller {
-
     @FXML
     VBox leftPanel, rightPanel;
 
-    @FXML
-    VBox terminal;
 
     public void btnExitAction(ActionEvent actionEvent) {
         Platform.exit();

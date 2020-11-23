@@ -1,5 +1,6 @@
-package com.file.manager;
+package com.blackcloud.desktop.elements;
 
+import com.blackcloud.desktop.model.FileInfo;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
@@ -22,16 +23,16 @@ import java.util.stream.Collectors;
 public class PanelController implements Initializable {
 
     @FXML
-    TableView<FileInfo> filesTable;
-
-    @FXML
     ComboBox<String> discBox;
 
     @FXML
     TextField pathField;
 
+    @FXML
+    TableView<FileInfo> filesTable;
+
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         TableColumn<FileInfo, String> fileTypeColumn = new TableColumn<>();
         fileTypeColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getType().getName()));
         fileTypeColumn.setPrefWidth(20);
