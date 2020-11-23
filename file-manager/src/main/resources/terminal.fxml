@@ -1,0 +1,6 @@
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TextArea?>
+<VBox fx:controller="com.file.manager.TerminalController" xmlns:fx="http://javafx.com/fxml" alignment="center">
+
+    <TextArea fx:id="terminalPanel" VBox.vgrow="ALWAYS"/>
+</VBox>

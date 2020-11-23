@@ -3,9 +3,11 @@ package com.file.manager;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,7 +34,7 @@ public class PanelController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         TableColumn<FileInfo, String> fileTypeColumn = new TableColumn<>();
         fileTypeColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getType().getName()));
-        fileTypeColumn.setPrefWidth(0.1);
+        fileTypeColumn.setPrefWidth(20);
 
         TableColumn<FileInfo, String> filenameColumn = new TableColumn<>("Name");
         filenameColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getFilename()));
@@ -75,6 +77,18 @@ public class PanelController implements Initializable {
         }
         discBox.getSelectionModel().select(0);
 
+        filesTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getClickCount() == 2) {
+                    Path path = Paths.get(pathField.getText()).resolve(filesTable.getSelectionModel().getSelectedItem().getFilename());
+                    if(Files.isDirectory(path)) {
+                        updateList(path);
+                    }
+                }
+            }
+        });
+
         updateList(Paths.get("."));
     }
 
@@ -99,5 +113,15 @@ public class PanelController implements Initializable {
     public void selectDiskAction(ActionEvent actionEvent) {
         ComboBox<String> element = (ComboBox<String>) actionEvent.getSource();
         updateList(Paths.get(element.getSelectionModel().getSelectedItem()));
+    }
+
+    public String getSelectedFilename() {
+        if(!filesTable.isFocused())
+            return null;
+        return filesTable.getSelectionModel().getSelectedItem().getFilename();
+    }
+
+    public String getCurrentPath() {
+        return pathField.getText();
     }
 }
