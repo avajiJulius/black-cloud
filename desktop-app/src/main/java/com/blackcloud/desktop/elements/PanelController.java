@@ -20,16 +20,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-public class PanelController implements Initializable {
+public class PanelController implements IPanelController, Initializable {
 
     @FXML
-    ComboBox<String> discBox;
+    private ComboBox<String> discBox;
 
     @FXML
-    TextField pathField;
+    private TextField pathField;
 
     @FXML
-    TableView<FileInfo> filesTable;
+    private TableView<FileInfo> filesTable;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -39,11 +39,11 @@ public class PanelController implements Initializable {
 
         TableColumn<FileInfo, String> filenameColumn = new TableColumn<>("Name");
         filenameColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getFilename()));
-        filenameColumn.setPrefWidth(300);
+        filenameColumn.setPrefWidth(160);
 
         TableColumn<FileInfo, Long> fileSizeColumn = new TableColumn<>("Size");
         fileSizeColumn.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getSize()));
-        fileSizeColumn.setPrefWidth(120);
+        fileSizeColumn.setPrefWidth(70);
         fileSizeColumn.setCellFactory(column -> {
             return new TableCell<FileInfo, Long>() {
                 @Override
@@ -64,10 +64,10 @@ public class PanelController implements Initializable {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        TableColumn<FileInfo, String> fileDateColumn = new TableColumn<>("Last Modified Date");
+        TableColumn<FileInfo, String> fileDateColumn = new TableColumn<>("Modified");
         fileDateColumn.setCellValueFactory(param ->
                 new SimpleStringProperty(param.getValue().getLastModified().format(formatter)));
-        fileDateColumn.setPrefWidth(180);
+        fileDateColumn.setPrefWidth(120);
 
         filesTable.getColumns().addAll(fileTypeColumn, filenameColumn, fileSizeColumn, fileDateColumn);
         filesTable.getSortOrder().add(fileTypeColumn);
@@ -90,9 +90,10 @@ public class PanelController implements Initializable {
             }
         });
 
-        updateList(Paths.get("."));
+
     }
 
+    @Override
     public void updateList(Path path) {
         try {
             pathField.setText(path.normalize().toAbsolutePath().toString());
@@ -105,24 +106,30 @@ public class PanelController implements Initializable {
         }
     }
 
+    @Override
     public void btnPathUpAction(ActionEvent actionEvent) {
         Path upperPath = Paths.get(pathField.getText()).getParent();
         if(upperPath != null)
             updateList(upperPath);
     }
 
+    @Override
     public void selectDiskAction(ActionEvent actionEvent) {
         ComboBox<String> element = (ComboBox<String>) actionEvent.getSource();
         updateList(Paths.get(element.getSelectionModel().getSelectedItem()));
     }
 
+    @Override
     public String getSelectedFilename() {
         if(!filesTable.isFocused())
             return null;
         return filesTable.getSelectionModel().getSelectedItem().getFilename();
     }
 
+    @Override
     public String getCurrentPath() {
         return pathField.getText();
     }
+
+
 }
