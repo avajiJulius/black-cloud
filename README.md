@@ -1,17 +1,20 @@
-# Black Cloud #
-
-Cloud storage project
+Black Cloud 
+=====================
+- [Stucure and steps](#structure-and-steps)
+- [Modules](#modules)
+    - [Black Cloud Desktop Application](#black-cloud-desktop-application)
+---------------------
 
 ## Structure and Steps
 
-1) [Black Cloud Desktop Application](#black-cloud-desktop-application)
+1) [Black Cloud Desktop Application](####black-cloud-desktop-application)
 2) Encrypting algorithm
 3) Server-client messanger
 4) Cloud storage
 
 ## Modules
 
-#### Black Cloud Desktop Application
+### Black Cloud Desktop Application
 
 Have 3 panel for managing the files
 
