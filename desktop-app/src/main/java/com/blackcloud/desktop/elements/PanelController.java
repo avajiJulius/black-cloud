@@ -131,5 +131,10 @@ public class PanelController implements IPanelController, Initializable {
         return pathField.getText();
     }
 
+    @Override
+    public boolean isFocused() {
+        return filesTable.isFocused();
+    }
+
 
 }

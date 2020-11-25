@@ -10,4 +10,5 @@ public interface IPanelController {
     void selectDiskAction(ActionEvent actionEvent);
     String getSelectedFilename();
     String getCurrentPath();
+    boolean isFocused();
 }

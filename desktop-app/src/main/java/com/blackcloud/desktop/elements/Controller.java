@@ -1,5 +1,8 @@
 package com.blackcloud.desktop.elements;
 
+import com.blackcloud.desktop.service.action.*;
+import com.blackcloud.desktop.service.zip.IZipService;
+import com.blackcloud.desktop.service.zip.ZipService;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,7 +15,6 @@ import javafx.scene.layout.VBox;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,6 +34,8 @@ public class Controller implements IController, Initializable {
     private VBox cloudPanel;
 
     private PanelController localPC, securePC, cloudPC;
+    private IZipService zipService;
+    private ActionService actionService;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -41,6 +45,8 @@ public class Controller implements IController, Initializable {
         securePC.updateList(Paths.get(securePath));
         this.cloudPC = (PanelController) cloudPanel.getProperties().get("ctrl");
         cloudPC.updateList(Paths.get(cloudPath));
+        zipService = new ZipService();
+        actionService = new ActionService(null);
     }
 
 
@@ -60,32 +66,23 @@ public class Controller implements IController, Initializable {
         }
 
 
-        PanelController srcPC = null, dstPC = null;
 
         //From local to secure
-        if(localPC.getSelectedFilename() != null) {
-            srcPC = localPC;
-            dstPC = securePC;
+        if(localPC.getSelectedFilename() != null && localPC.isFocused()) {
+            actionService.setActionHandler(new LocalActionHandler(localPC, securePC));
+
         }
 
         //From secure to cloud
-        if(securePC.getSelectedFilename() != null) {
-            srcPC = securePC;
-            dstPC = cloudPC;
+        if(securePC.getSelectedFilename() != null && securePC.isFocused()) {
+            actionService.setActionHandler(new SecureActionHandler(securePC, cloudPC, zipService));
         }
 
 
-
-
-
-        Path srcPath = Paths.get(srcPC.getCurrentPath(), srcPC.getSelectedFilename());
-        Path dstPath = Paths.get(dstPC.getCurrentPath()).resolve(srcPath.getFileName().toString());
-
         try {
-            Files.copy(srcPath, dstPath);
-            dstPC.updateList(Paths.get(dstPC.getCurrentPath()));
+            actionService.exportAction();
         } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Can not copy file", ButtonType.OK);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Can not export file", ButtonType.OK);
             alert.showAndWait();
         }
     }
@@ -99,25 +96,17 @@ public class Controller implements IController, Initializable {
             return;
         }
 
-        PanelController srcPC = null, dstPC = null;
-
         //From cloud to secure
         if(cloudPC.getSelectedFilename() != null) {
-            srcPC = cloudPC;
-            dstPC = securePC;
+            actionService.setActionHandler(new CloudActionHandler(cloudPC, securePC));
         }
         //From secure to local
         if(securePC.getSelectedFilename() != null) {
-            srcPC = securePC;
-            dstPC = localPC ;
+            actionService.setActionHandler(new SecureActionHandler(securePC, localPC, zipService));
         }
 
-        Path srcPath = Paths.get(srcPC.getCurrentPath(), srcPC.getSelectedFilename());
-        Path dstPath = Paths.get(dstPC.getCurrentPath()).resolve(srcPath.getFileName().toString());
-
         try {
-            Files.copy(srcPath, dstPath);
-            dstPC.updateList(Paths.get(dstPC.getCurrentPath()));
+            actionService.importAction();
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Can not copy file", ButtonType.OK);
             alert.showAndWait();
@@ -132,26 +121,30 @@ public class Controller implements IController, Initializable {
             return;
         }
 
-        PanelController srcPC = cloudPC.getSelectedFilename() != null ? cloudPC : securePC.getSelectedFilename() != null ? securePC : localPC;
+        if (cloudPC.getSelectedFilename() != null && cloudPC.isFocused()) {
+            actionService.setActionHandler(new CloudActionHandler(cloudPC));
+        }
+        if (securePC.getSelectedFilename() != null && securePC.isFocused()) {
+            actionService.setActionHandler(new SecureActionHandler(securePC));
+        }
+        if (localPC.getSelectedFilename() != null && localPC.isFocused()){
+            actionService.setActionHandler(new LocalActionHandler(localPC));
+        }
+
+        PanelController srcPC = actionService.getActionHandler().getSrcPanelController();
         Path srcPath = Paths.get(srcPC.getCurrentPath(), srcPC.getSelectedFilename());
         String alertMessage = Files.isDirectory(srcPath) ? "Confirm delete directory" : "Confirm delete file";
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, alertMessage);
-        Optional<ButtonType> buttonType = alert.showAndWait();
-        if(buttonType.get() == ButtonType.OK) {
+        ButtonType buttonType = alert.showAndWait().get();
+
+        if(buttonType == ButtonType.OK) {
             try {
-                if(Files.isDirectory(srcPath))
-                    deleteDirectory(srcPath);
-                else
-                    Files.deleteIfExists(srcPath);
-                srcPC.updateList(Paths.get(srcPC.getCurrentPath()));
+                actionService.deleteAction();
             } catch (IOException e) {
                 Alert error = new Alert(Alert.AlertType.ERROR, "Error when deleted file", ButtonType.OK);
                 error.showAndWait();
             }
-        } else {
-            return;
         }
-
 
     }
 
@@ -162,34 +155,32 @@ public class Controller implements IController, Initializable {
 
     @Override
     public void createFolder(ActionEvent actionEvent) {
-        PanelController srcPC = cloudPC.getCurrentPath() != null ? cloudPC : securePC.getCurrentPath() != null ? securePC : localPC;
 
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Create");
-        dialog.setHeaderText("Create folder");
-        dialog.setContentText("Enter folder name:");
-        dialog.showAndWait().ifPresent(name -> {
-            try {
-                Path srcPath = Paths.get(srcPC.getCurrentPath(), name);
-                Files.createDirectory(srcPath);
-                srcPC.updateList(Paths.get(srcPC.getCurrentPath()));
-            } catch (FileAlreadyExistsException e) {
-                Alert alreadyExist = new Alert(Alert.AlertType.ERROR, "Folder already exist", ButtonType.OK);
-                alreadyExist.showAndWait();
-            } catch (IOException e) {
-                Alert error = new Alert(Alert.AlertType.ERROR, "Error when creating folder", ButtonType.OK);
-                error.showAndWait();
+        try {
+            if (cloudPC.isFocused()) {
+                actionService.setActionHandler(new CloudActionHandler(cloudPC));
             }
-        });
+            if (securePC.isFocused()) {
+                actionService.setActionHandler(new SecureActionHandler(securePC));
+            }
+            if (localPC.isFocused()){
+                actionService.setActionHandler(new LocalActionHandler(localPC));
+            }
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Create");
+            dialog.setHeaderText("Create folder");
+            dialog.setContentText("Enter folder name:");
+            String folderName = dialog.showAndWait().get();
+
+            actionService.createFolder(folderName);
+        } catch (IOException e) {
+            Alert error = new Alert(Alert.AlertType.ERROR, "Error when creating folder", ButtonType.OK);
+            error.showAndWait();
+        }
 
     }
 
-    void deleteDirectory(Path path) throws IOException {
-        Files.walk(path)
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
-    }
+
 
 
 }
