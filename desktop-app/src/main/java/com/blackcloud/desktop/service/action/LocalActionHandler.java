@@ -36,6 +36,7 @@ public class LocalActionHandler extends DefaultActionHandler implements ActionHa
         Path dstPath = Paths.get(dstPC.getCurrentPath()).resolve(srcPath.getFileName().toString());
         FileUtils.copyDirectory(srcPath.toFile(), dstPath.toFile());
         dstPC.updateList(Paths.get(dstPC.getCurrentPath()));
+
     }
 
     @Override

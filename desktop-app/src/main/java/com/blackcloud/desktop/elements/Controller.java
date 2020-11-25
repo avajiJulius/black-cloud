@@ -1,6 +1,8 @@
 package com.blackcloud.desktop.elements;
 
 import com.blackcloud.desktop.service.action.*;
+import com.blackcloud.desktop.service.encryption.EncryptionService;
+import com.blackcloud.desktop.service.encryption.IEncryptionService;
 import com.blackcloud.desktop.service.zip.IZipService;
 import com.blackcloud.desktop.service.zip.ZipService;
 import javafx.application.Platform;
@@ -18,11 +20,12 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class Controller implements IController, Initializable {
+public class Controller implements Initializable {
 
     private final String cloudPath = "C:\\Users\\avaji\\Desktop\\cloud";
     private final String securePath = "C:\\Users\\avaji\\Desktop\\secure";
@@ -35,6 +38,7 @@ public class Controller implements IController, Initializable {
 
     private PanelController localPC, securePC, cloudPC;
     private IZipService zipService;
+    private IEncryptionService encryptionService;
     private ActionService actionService;
 
     @Override
@@ -45,17 +49,16 @@ public class Controller implements IController, Initializable {
         securePC.updateList(Paths.get(securePath));
         this.cloudPC = (PanelController) cloudPanel.getProperties().get("ctrl");
         cloudPC.updateList(Paths.get(cloudPath));
-        zipService = new ZipService();
+        encryptionService = new EncryptionService();
         actionService = new ActionService(null);
+        zipService = new ZipService();
     }
 
 
-    @Override
     public void exitAction(ActionEvent actionEvent) {
         Platform.exit();
     }
 
-    @Override
     public void exportAction(ActionEvent actionEvent) {
 
         //Error
@@ -75,19 +78,18 @@ public class Controller implements IController, Initializable {
 
         //From secure to cloud
         if(securePC.getSelectedFilename() != null && securePC.isFocused()) {
-            actionService.setActionHandler(new SecureActionHandler(securePC, cloudPC, zipService));
+            actionService.setActionHandler(new SecureActionHandler(securePC, cloudPC, zipService, encryptionService));
         }
 
 
         try {
             actionService.exportAction();
-        } catch (IOException e) {
+        } catch (IOException | GeneralSecurityException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Can not export file", ButtonType.OK);
             alert.showAndWait();
         }
     }
 
-    @Override
     public void importAction(ActionEvent actionEvent) {
         //Error
         if(localPC.getSelectedFilename() == null && securePC.getSelectedFilename() == null && cloudPC.getSelectedFilename() == null) {
@@ -98,22 +100,21 @@ public class Controller implements IController, Initializable {
 
         //From cloud to secure
         if(cloudPC.getSelectedFilename() != null) {
-            actionService.setActionHandler(new CloudActionHandler(cloudPC, securePC));
+            actionService.setActionHandler(new CloudActionHandler(cloudPC, securePC, zipService, encryptionService));
         }
         //From secure to local
         if(securePC.getSelectedFilename() != null) {
-            actionService.setActionHandler(new SecureActionHandler(securePC, localPC, zipService));
+            actionService.setActionHandler(new SecureActionHandler(securePC, localPC));
         }
 
         try {
             actionService.importAction();
-        } catch (IOException e) {
+        } catch (IOException | GeneralSecurityException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Can not copy file", ButtonType.OK);
             alert.showAndWait();
         }
     }
 
-    @Override
     public void deleteAction(ActionEvent actionEvent) {
         if (localPC.getSelectedFilename() == null && securePC.getSelectedFilename() == null && cloudPC.getSelectedFilename() == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "No file selected", ButtonType.OK);
@@ -148,12 +149,6 @@ public class Controller implements IController, Initializable {
 
     }
 
-    @Override
-    public void moveAction(ActionEvent actionEvent) {
-
-    }
-
-    @Override
     public void createFolder(ActionEvent actionEvent) {
 
         try {

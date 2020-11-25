@@ -1,6 +1,11 @@
 package com.blackcloud.desktop.service.zip;
 
+import com.blackcloud.desktop.service.encryption.EncryptionService;
+import com.blackcloud.desktop.service.encryption.IEncryptionService;
+
 import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -8,20 +13,24 @@ import java.util.zip.ZipOutputStream;
 
 public class ZipService implements IZipService {
 
+
     @Override
-    public void zip(Path srcPath, Path dstPath) throws IOException {
+    public String zip(Path srcPath) throws IOException {
         File srcFile = srcPath.toFile();
         String filename = srcPath.getFileName().toString();
-        ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(String.valueOf(dstPath.resolve(filename)).concat(".zip")));
-
+        String outFile = String.valueOf(srcPath).concat(".zip");
+        ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(outFile));
         zipFile(srcFile, filename, zipOut);
         zipOut.close();
+        return outFile;
     }
 
     @Override
-    public void unzip(Path srcPath, Path dstPath) throws IOException{
+    public void unzip(Path srcPath) throws IOException{
         File srcFile = srcPath.toFile();
-        File dstFile = dstPath.toFile();
+        int length = srcFile.getAbsolutePath().length();
+        File dstFile = new File(srcFile.getAbsolutePath().substring(0, length - 4));
+
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(srcFile));
         ZipEntry zipEntry = zis.getNextEntry();
@@ -84,6 +93,7 @@ public class ZipService implements IZipService {
             }
             return;
         }
+
         FileInputStream fis = new FileInputStream(srcFile);
         ZipEntry zipEntry = new ZipEntry(filename);
         zipOut.putNextEntry(zipEntry);

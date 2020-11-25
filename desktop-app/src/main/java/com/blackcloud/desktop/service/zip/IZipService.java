@@ -4,6 +4,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 public interface IZipService {
-    void zip(Path srcPath, Path dstPath) throws IOException;
-    void unzip(Path srcPath, Path dstPath) throws IOException;
+    String zip(Path srcPath) throws IOException;
+    void unzip(Path srcPath) throws IOException;
 }

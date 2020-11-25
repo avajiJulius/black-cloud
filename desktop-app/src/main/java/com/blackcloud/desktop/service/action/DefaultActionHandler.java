@@ -1,8 +1,6 @@
 package com.blackcloud.desktop.service.action;
 
 import com.blackcloud.desktop.elements.PanelController;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 
 import java.io.File;
 import java.io.IOException;

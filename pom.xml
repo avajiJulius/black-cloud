@@ -11,6 +11,8 @@
     <modules>
         <module>file-manager</module>
         <module>desktop-app</module>
+        <module>cloud-encryptor</module>
+        <module>crypto</module>
     </modules>
 
     <properties>

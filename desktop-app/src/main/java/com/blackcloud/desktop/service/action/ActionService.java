@@ -2,6 +2,7 @@ package com.blackcloud.desktop.service.action;
 
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 public class ActionService {
 
@@ -19,11 +20,11 @@ public class ActionService {
         actionHandler.deleteAction();
     }
 
-    public void importAction() throws IOException {
+    public void importAction() throws IOException, GeneralSecurityException {
         actionHandler.importAction();
     }
 
-    public void exportAction() throws IOException {
+    public void exportAction() throws IOException, GeneralSecurityException {
         actionHandler.exportAction();
     }
 
