@@ -1,7 +1,7 @@
 package com.blackcloud.desktop.elements;
 
 import com.blackcloud.desktop.service.action.*;
-import com.blackcloud.desktop.service.encryption.EncryptionService;
+import com.blackcloud.desktop.service.encryption.OneSessionEncryptionService;
 import com.blackcloud.desktop.service.encryption.IEncryptionService;
 import com.blackcloud.desktop.service.zip.IZipService;
 import com.blackcloud.desktop.service.zip.ZipService;
@@ -14,15 +14,12 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.VBox;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
-import java.util.Comparator;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -49,7 +46,7 @@ public class Controller implements Initializable {
         securePC.updateList(Paths.get(securePath));
         this.cloudPC = (PanelController) cloudPanel.getProperties().get("ctrl");
         cloudPC.updateList(Paths.get(cloudPath));
-        encryptionService = new EncryptionService();
+        encryptionService = new OneSessionEncryptionService();
         actionService = new ActionService(null);
         zipService = new ZipService();
     }
