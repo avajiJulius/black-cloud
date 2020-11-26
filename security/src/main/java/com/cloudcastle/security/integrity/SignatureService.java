@@ -1,4 +1,8 @@
 package com.cloudcastle.security.integrity;
 
-public class SignatureService {
+import java.security.GeneralSecurityException;
+
+public interface SignatureService {
+    byte[] sign() throws GeneralSecurityException;
+    boolean verify() throws GeneralSecurityException;
 }

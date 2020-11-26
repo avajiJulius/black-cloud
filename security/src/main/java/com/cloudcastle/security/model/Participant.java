@@ -1,6 +1,6 @@
-package com.cloudcastle.security;
+package com.cloudcastle.security.model;
 
-public class Participant {
+public abstract class Participant {
     private String name;
     public static final int SENDER = 1;
     public static final int RECEIVER = 2;
@@ -8,6 +8,7 @@ public class Participant {
     public Participant(String name) {
         this.name = name;
     }
+
 
     public String getName() {
         return name;
