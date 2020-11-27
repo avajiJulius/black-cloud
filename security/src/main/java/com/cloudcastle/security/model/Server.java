@@ -20,8 +20,7 @@ public class Server extends Participant {
     private Server() {
         super("Cloud Castle server");
         try {
-            KeyPairGenerator generator = null;
-            generator = KeyPairGenerator.getInstance("RSA");
+            KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
             generator.initialize(1024);
             KeyPair keyPair = generator.generateKeyPair();
             this.privateKey = keyPair.getPrivate();
