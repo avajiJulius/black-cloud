@@ -1,4 +1,4 @@
-Black Cloud 
+Black Cloud  [![Codeship Status for avajiJulius/black-cloud](https://app.codeship.com/projects/1c337082-3752-470f-a65c-eab43bee4fa1/status?branch=master)](https://app.codeship.com/projects/419920)
 =====================
 - [Stucure and steps](#structure-and-steps)
 - [Modules](#modules)
