@@ -13,7 +13,7 @@ public class CertificateStore {
     private String password = "MyPassword";
     public void store() throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException {
         KeyStore keyStore = KeyStore.getInstance("JKS");
-        keyStore.load(InputStream.nullInputStream(), password.toCharArray());
+//        keyStore.load(InputStream.nullInputStream(), password.toCharArray());
 //        Key key = keyStore.getKey()
     }
 }
