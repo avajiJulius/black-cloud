@@ -13,6 +13,11 @@ public class Verifier {
     private byte[] signature;
     private PublicKey key;
 
+    public Verifier(Transaction transaction) throws TransactionException {
+        this.transaction = transaction;
+        this.key = transaction.getServerPublicKey();
+    }
+
     public Verifier(Transaction transaction, byte[] signature) throws TransactionException {
         this.transaction = transaction;
         this.signature = signature;
@@ -24,5 +29,9 @@ public class Verifier {
         verification.initVerify(key);
         verification.update(transaction.getTransactionId());
         return verification.verify(signature);
+    }
+
+    public void setSignature(byte[] signature) {
+        this.signature = signature;
     }
 }

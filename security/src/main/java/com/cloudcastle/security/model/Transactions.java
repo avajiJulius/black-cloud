@@ -26,6 +26,10 @@ public class Transactions {
         this.set.remove(transaction);
     }
 
+    public void stop() {
+        transactions = null;
+    }
+
     public Set<Transaction> getSet(){
         return this.set;
     }

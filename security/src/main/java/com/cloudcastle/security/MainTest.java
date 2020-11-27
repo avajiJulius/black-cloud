@@ -17,8 +17,8 @@ public class MainTest {
         Transaction transaction = Transaction.getInstance(new Client("avaji", "123"), Server.connect());
 
         SignatureService signatureService = new SignatureHandler(transaction);
-        signatureService.sign();
-        if(signatureService.verify()) {
+        byte[] signature = signatureService.sign();
+        if(signatureService.verify(signature)) {
             System.out.println("Yesssss!");
         }
 

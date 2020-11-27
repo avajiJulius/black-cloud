@@ -57,6 +57,21 @@ public class Transaction {
     @Override
     public String toString() {
         return "Transaction: " +
-                ", id=" + Arrays.toString(id);
+                "id = " + Arrays.toString(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Transaction that = (Transaction) o;
+
+        return Arrays.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(id);
     }
 }

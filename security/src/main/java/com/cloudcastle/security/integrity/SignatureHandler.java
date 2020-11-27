@@ -10,9 +10,9 @@ public class SignatureHandler implements SignatureService {
     private Signer signer;
     private Transaction transaction;
 
-    public SignatureHandler(Transaction transaction) throws GeneralSecurityException, TransactionException {
+    public SignatureHandler(Transaction transaction) throws TransactionException {
         this.signer = new Signer(transaction);
-        this.verifier = new Verifier(transaction, signer.sign());
+        this.verifier = new Verifier(transaction);
         this.transaction = transaction;
     }
 
@@ -22,7 +22,8 @@ public class SignatureHandler implements SignatureService {
     }
 
     @Override
-    public boolean verify() throws GeneralSecurityException {
+    public boolean verify(byte[] signature) throws GeneralSecurityException {
+        verifier.setSignature(signature);
         return verifier.verify();
     }
 }
