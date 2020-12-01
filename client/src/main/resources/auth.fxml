@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="200.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cloudcastle.client.controller.AuthController">
+<BorderPane>
+      <center>
+         <AnchorPane prefHeight="200.0" prefWidth="250.0" BorderPane.alignment="CENTER">
+            <children>
+                <TextField layoutX="48.0" layoutY="56.0" prefHeight="18.0" prefWidth="150.0" promptText="Username"  />
+      
+                <PasswordField layoutX="50.0" layoutY="100.0" promptText="Password" />
+               <Button alignment="CENTER" layoutX="102.0" layoutY="146.0" mnemonicParsing="false" text="Login" />
+            </children>
+         </AnchorPane>
+      </center>
+</BorderPane>
+</VBox>

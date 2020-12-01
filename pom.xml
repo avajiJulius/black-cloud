@@ -11,6 +11,8 @@
     <modules>
         <module>desktop-app</module>
         <module>security</module>
+        <module>server</module>
+        <module>client</module>
     </modules>
 
     <properties>
@@ -23,20 +25,11 @@
     </properties>
 
     <dependencies>
-
-
-
         <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>${javafx.version}</version>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.54.Final</version>
         </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-
 
         <dependency>
             <groupId>commons-io</groupId>
@@ -50,7 +43,6 @@
             <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
