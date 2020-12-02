@@ -7,12 +7,18 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.ssl.DelegatingSslContext;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.security.KeyStore;
+import java.security.cert.X509Certificate;
 
 public class Network {
     private SocketChannel channel;
@@ -23,6 +29,12 @@ public class Network {
         Thread thread = new Thread(() ->{
             EventLoopGroup group = new NioEventLoopGroup(1);
             try {
+//                TrustManagerFactory tmf = TrustManagerFactory.getInstance("ssl.KeyManagerFactory.algorithm");
+//                tmf.init((KeyStore) null);
+//                TrustManager[] trustManagers = tmf.getTrustManagers();
+//                SSLContext sslContext = SSLContext.getInstance("TLS");
+//                sslContext.init(null, trustManagers, null);
+
                 final SslContext sslCtx = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
 
                 Bootstrap b = new Bootstrap();

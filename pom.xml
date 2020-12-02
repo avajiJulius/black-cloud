@@ -20,10 +20,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <junit.version>5.7.0</junit.version>
-        <javafx.version>16-ea+4</javafx.version>
     </properties>
 
+
+
     <dependencies>
+
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
@@ -54,6 +56,7 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
 
     </dependencies>
     <build>
